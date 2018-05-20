@@ -7,20 +7,12 @@ import './index.css';
 
 
 class Square extends React.Component {
-  constructor(props){
-    super(props);
-    this.state ={
-      value: null,
-    };
-  }
+  
+  
   render() {
     return (
-      <button className="square" onClick={()=>this.setState({value:'X'})}
-      >
-      
-     
-
-        {this.state.value}
+      <button className="square" onClick={()=>this.props.onClick()} >
+        {this.props.value}
       </button>
     );
   }
@@ -34,7 +26,13 @@ class Board extends React.Component {
     this.state = { squares: Array(9).fill(null),
       
     };
-    
+  }
+// .slice below will copy the squares array instead of mutating the existing array
+
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+      squares[i] = 'X';
+      this.setState({squares: squares});
   }
 // new thing here: Arra7(num).fill(withsomething)
 
