@@ -4,35 +4,30 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+const Square = (props) => <button className="square" onClick={props.onClick} >
+  {props.value}
+</button>
 
 
-class Square extends React.Component {
-  
-  
-  render() {
-    return (
-      <button className="square" onClick={()=>this.props.onClick()} >
-        {this.props.value}
-      </button>
-    );
-  }
-}
 {/* // {() => alert ('click')}> */ }
 {/* //new thing here => alert('click') will create an alert for each click this was formerly located inside the button element of the square component*/}
 
 class Board extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = { squares: Array(9).fill(null),
-      
-    };
-  }
+  
 // .slice below will copy the squares array instead of mutating the existing array
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-      squares[i] = 'X';
-      this.setState({squares: squares});
+      if (calculateWinner(squares) ||
+      squares[i]) {
+        return;
+      }
+        
+      squares[i] = this.state.xIsNext ? 'X': 'O';
+      this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+      });
   }
 // new thing here: Arra7(num).fill(withsomething)
 
@@ -40,13 +35,20 @@ class Board extends React.Component {
     //aha! the reason for the ( around the return statement is that otherwise if return is on a line on its own, javascript will insert a semicolon)
     return ( 
           <Square 
-            value={this.state.squares[i]} 
-            onClick={() => this.handleClick(i)}/>
+            value={this.props.squares[i]} 
+            onClick={() => this.handleClick(i)}
+          />
     );
   }
 
   render() {
-    const status = 'Next player: X';
+    const winner = calculateWinner(this.state.squares); 
+    let status;
+    if (winner) {
+      status = "Winner: " + winner;
+    } else {
+      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+    }
 
     return (
       <div>
@@ -72,6 +74,15 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      xIsNext: true,
+    };
+  }
   render() {
     return (
       <div className="game">
@@ -86,6 +97,27 @@ class Game extends React.Component {
     );
   }
 }
+function calculateWinner(squares){
+  const lines = [
+    [0,1,2],
+    [3, 4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6],
+  ];
+  for (let i=0; i<lines.length; i++){
+    const [a,b,c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
+      return squares[a];
+    }
+  }
+  return null;
+}
+    
+  
 
 // ========================================
 
