@@ -7,18 +7,44 @@ import './index.css';
 
 
 class Square extends React.Component {
+  constructor(props){
+    super(props);
+    this.state ={
+      value: null,
+    };
+  }
   render() {
     return (
-      <button className="square" onClick={() => alert ('click')}>
-        {this.props.value}
+      <button className="square" onClick={()=>this.setState({value:'X'})}
+      >
+      
+     
+
+        {this.state.value}
       </button>
     );
   }
 }
+{/* // {() => alert ('click')}> */ }
+{/* //new thing here => alert('click') will create an alert for each click this was formerly located inside the button element of the square component*/}
 
 class Board extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = { squares: Array(9).fill(null),
+      
+    };
+    
+  }
+// new thing here: Arra7(num).fill(withsomething)
+
   renderSquare(i) {
-    return <Square value={i} />;
+    //aha! the reason for the ( around the return statement is that otherwise if return is on a line on its own, javascript will insert a semicolon)
+    return ( 
+          <Square 
+            value={this.state.squares[i]} 
+            onClick={() => this.handleClick(i)}/>
+    );
   }
 
   render() {
